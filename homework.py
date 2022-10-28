@@ -2,7 +2,6 @@ from http import HTTPStatus
 import logging
 import os
 import time
-from pprint import pprint
 
 import requests
 from dotenv import load_dotenv
@@ -26,7 +25,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    """Отправка сообщений в телеграм чат"""
+    """Отправка сообщений в телеграм чат."""
     logging.info('Отправленно сообщение в телеграм')
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
@@ -36,7 +35,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
-    """Запрос к эндпоинту API YaP"""
+    """Запрос к эндпоинту API YaP."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     try:
@@ -54,7 +53,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
-    """Проверка ответа API YaP на корректность"""
+    """Проверка ответа API YaP на корректность."""
     if isinstance(response, list):
         response = response['homeworks'][0]
     homework = response.get('homeworks')
@@ -64,7 +63,7 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """Парсим статус работы из get_api_answer"""
+    """Парсим статус работы из get_api_answer."""
     homework_name = homework.get('homework_name')
     if homework_name is None:
         logging.error('В ответе API нет ключа homework_name')
@@ -81,7 +80,7 @@ def parse_status(homework):
 
 
 def check_tokens():
-    """Проверяет наличие токенов"""
+    """Проверяет наличие токенов."""
     bool_or_not_to_bool = all([
         PRACTICUM_TOKEN is not None, TELEGRAM_TOKEN is not None,
         TELEGRAM_CHAT_ID is not None
