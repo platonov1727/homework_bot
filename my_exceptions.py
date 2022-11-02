@@ -4,12 +4,13 @@ class SendMessageErrorException(Exception):
     pass
 
 
-class GetApiAnswerReturnedNotList(Exception):
+class TokenValidException(Exception):
     """get_api_answer вернул не список."""
 
     pass
 
+
 class ResponseListAreEmpty(Exception):
-    """get_api_answer list is empty"""
+    """get_api_answer list is empty."""
 
     pass
