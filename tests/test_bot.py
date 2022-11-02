@@ -630,7 +630,7 @@ class TestHomework:
 
         import homework
 
-        func_name = 'check_response'
+        func_name = 'get_api_answer'
         try:
             homework.get_api_answer(current_timestamp)
         except:
