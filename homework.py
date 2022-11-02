@@ -109,9 +109,12 @@ def main():
             homeworks = check_response(response)
             flag_message = 'Статус работы не изменился'
             if homeworks:
-                message = parse_status(homeworks[0])
-                send_message(bot, message)
-                logging.info('Успешно отправлен статус домашней работы')
+                try:
+                    message = parse_status(homeworks[0])
+                    send_message(bot, message)
+                    logging.info('Успешно отправлен статус домашней работы')
+                except SendMessageErrorException:
+                    logging.error('Сбой отправки сообщения в телеграм')
             logging.info(flag_message)
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
