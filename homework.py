@@ -116,7 +116,6 @@ def main():
                     send_message(bot, message)
                 logging.info('Успешно отправлен статус домашней работы')
             logging.info(flag_message)
-        except Exception('Что-то пошло не так')
         except Exception as error:
             logging.error(f'Сбой в работе программы: {error}')
             message = f'Сбой в работе программы: {error}'
