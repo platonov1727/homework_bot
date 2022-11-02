@@ -84,6 +84,7 @@ def parse_status(homework: list) -> dict:
         raise KeyError('Неизвестный статус')
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
+
 def check_tokens():
     """Проверяет наличие токенов."""
     logging.info('Валидация токенов')
@@ -98,7 +99,7 @@ def main():
     if not check_tokens():
         logging.critical('Токены не прошли валидацию')
         sys.exit('Токены не прошли валидацию')
-        
+
     else:
         logging.info('Токены прошли валидацию')
     current_timestamp = int(time.time())
