@@ -8,7 +8,7 @@ import requests
 from dotenv import load_dotenv
 from telegram import Bot
 
-from my_exceptions import SendMessageErrorException, TokenValidException
+from my_exceptions import SendMessageErrorException
 
 load_dotenv()
 
@@ -53,10 +53,11 @@ def get_api_answer(current_timestamp) -> dict:
                                        headers=HEADERS,
                                        params=params)
         if homework_status.status_code != HTTPStatus.OK:
-            raise Exception('Эндпоинт YaP недоступен')
+            raise Exception('Эндпоинт YaP недоступен. '
+                            f'Код ответа:{homework_status.status_code}')
         return homework_status.json()
-    except Exception:
-        raise ConnectionError('Ошибка обращения к API Praktikum')
+    except Exception as error:
+        raise ConnectionError(f'Ошибка обращения к API Praktikum. {error}')
 
 
 def check_response(response: dict) -> list:
@@ -88,10 +89,7 @@ def parse_status(homework: list) -> dict:
 def check_tokens():
     """Проверяет наличие токенов."""
     logging.info('Валидация токенов')
-    try:
-        return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
-    except Exception:
-        raise TokenValidException('Токены не прошли валидацию')
+    return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
 
 
 def main():
@@ -103,6 +101,7 @@ def main():
     else:
         logging.info('Токены прошли валидацию')
     current_timestamp = int(time.time())
+    OLD_MESSAGE = None
     while True:
         try:
             bot = Bot(token=TELEGRAM_TOKEN)
@@ -110,14 +109,16 @@ def main():
             homeworks = check_response(response)
             flag_message = 'Статус работы не изменился'
             if homeworks:
-                try:
-                    message = parse_status(homeworks[0])
+                message = parse_status(homeworks[0])
+                if OLD_MESSAGE != message:
                     send_message(bot, message)
-                    logging.info('Успешно отправлен статус домашней работы')
-                except SendMessageErrorException:
-                    logging.error('Сбой отправки сообщения в телеграм')
+                    OLD_MESSAGE = message
+                    send_message(bot, message)
+                logging.info('Успешно отправлен статус домашней работы')
             logging.info(flag_message)
+        except Exception('Что-то пошло не так')
         except Exception as error:
+            logging.error(f'Сбой в работе программы: {error}')
             message = f'Сбой в работе программы: {error}'
         finally:
             time.sleep(RETRY_TIME)
