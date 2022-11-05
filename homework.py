@@ -101,7 +101,7 @@ def main():
     else:
         logging.info('Токены прошли валидацию')
     current_timestamp = int(time.time())
-    OLD_MESSAGE = None
+    old_status = None
     while True:
         try:
             bot = Bot(token=TELEGRAM_TOKEN)
@@ -110,11 +110,11 @@ def main():
             flag_message = 'Статус работы не изменился'
             if homeworks:
                 message = parse_status(homeworks[0])
-                if OLD_MESSAGE != message:
-                    send_message(bot, message)
-                    OLD_MESSAGE = message
-                    send_message(bot, message)
-                logging.info('Успешно отправлен статус домашней работы')
+            if old_status != message:
+                send_message(bot, message)
+                old_status = message
+                send_message(bot, message)
+            logging.info('Успешно отправлен статус домашней работы')
             logging.info(flag_message)
         except Exception as error:
             logging.error(f'Сбой в работе программы: {error}')
