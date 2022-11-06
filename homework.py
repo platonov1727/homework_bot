@@ -6,7 +6,7 @@ from http import HTTPStatus
 
 import requests
 from dotenv import load_dotenv
-from telegram import Bot
+from telegram import Bot, TelegramError
 
 from my_exceptions import SendMessageErrorException
 
@@ -53,7 +53,7 @@ def get_api_answer(current_timestamp) -> dict:
                                        headers=HEADERS,
                                        params=params)
         if homework_status.status_code != HTTPStatus.OK:
-            raise Exception('Эндпоинт YaP недоступен. '
+            raise Exception('Запрос к ендпоинту вернул ошибку. '
                             f'Код ответа:{homework_status.status_code}')
         return homework_status.json()
     except Exception as error:
@@ -116,13 +116,17 @@ def main():
                 send_message(bot, message)
             logging.info('Успешно отправлен статус домашней работы')
             logging.info(flag_message)
+        except TelegramError as error:
+            (f'Ошибка работы программы{error}')
+        except ConnectionError as err:
+            (f'Ошибка работы программы {err}')
         except Exception as error:
             logging.error(f'Сбой в работе программы: {error}')
             message = f'Сбой в работе программы: {error}'
         finally:
             time.sleep(RETRY_TIME)
 
-
+›
 if __name__ == '__main__':
     logging_conf()
     main()
