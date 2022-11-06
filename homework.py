@@ -126,7 +126,7 @@ def main():
         finally:
             time.sleep(RETRY_TIME)
 
-›
+
 if __name__ == '__main__':
     logging_conf()
     main()
